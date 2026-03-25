@@ -1,148 +1,215 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
-import { 
-  LayoutDashboard, 
-  Wallet, 
-  ArrowRightLeft, 
-  CreditCard, 
-  Briefcase, 
-  PiggyBank, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Wallet,
+  ArrowRightLeft,
+  CreditCard,
+  Briefcase,
+  PiggyBank,
+  Settings,
   LogOut,
   Menu,
   Bell,
   Crown,
-  Send
+  Send,
+  TrendingUp,
+  X,
+  ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-const navItems = [
-  { icon: LayoutDashboard, label: "Tableau de bord", path: "/dashboard" },
-  { icon: Wallet, label: "Comptes", path: "/accounts" },
-  { icon: ArrowRightLeft, label: "Transactions", path: "/transactions", badge: true },
-  { icon: CreditCard, label: "Cartes", path: "/cards" },
-  { icon: Send, label: "Virements", path: "/transfers" },
-  { icon: Briefcase, label: "Crédits", path: "/loans" },
-  { icon: PiggyBank, label: "Épargne", path: "/savings" },
-  { icon: Settings, label: "Paramètres", path: "/profile" },
+const navGroups = [
+  {
+    label: "Aperçu",
+    items: [
+      { icon: LayoutDashboard, label: "Tableau de bord", path: "/dashboard" },
+    ],
+  },
+  {
+    label: "Mes finances",
+    items: [
+      { icon: Wallet, label: "Comptes", path: "/accounts" },
+      { icon: ArrowRightLeft, label: "Transactions", path: "/transactions", badge: true },
+      { icon: CreditCard, label: "Cartes", path: "/cards" },
+      { icon: Send, label: "Virements", path: "/transfers" },
+    ],
+  },
+  {
+    label: "Financement & épargne",
+    items: [
+      { icon: Briefcase, label: "Crédits", path: "/loans" },
+      { icon: PiggyBank, label: "Épargne", path: "/savings" },
+      { icon: TrendingUp, label: "Investissements", path: "/savings" },
+    ],
+  },
+  {
+    label: "Compte",
+    items: [
+      { icon: Settings, label: "Paramètres", path: "/profile" },
+    ],
+  },
 ];
+
+const tierConfig: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  premium: { label: "Premium", color: "text-amber-300", bg: "bg-amber-400/10", border: "border-amber-400/20" },
+  elite:   { label: "Elite",   color: "text-violet-300", bg: "bg-violet-400/10", border: "border-violet-400/20" },
+  standard:{ label: "Standard",color: "text-sky-300",  bg: "bg-sky-400/10",  border: "border-sky-400/20"  },
+};
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  return (
-    <div className="min-h-screen bg-background text-foreground flex overflow-hidden">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col bg-card/40 backdrop-blur-2xl border-r border-white/5 relative z-20">
-        <div className="p-6">
-          <Link href="/dashboard" className="flex items-center gap-2 group cursor-pointer">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all">
-              <span className="font-bold text-white text-lg leading-none">N</span>
+  const tier = tierConfig[user?.tier || "standard"] || tierConfig.standard;
+
+  const SidebarContent = () => (
+    <>
+      {/* Logo */}
+      <div className="px-5 pt-6 pb-4">
+        <Link href="/dashboard" className="flex items-center gap-2.5 group" onClick={() => setMobileMenuOpen(false)}>
+          <div className="relative">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary via-sky-400 to-accent flex items-center justify-center shadow-lg shadow-primary/25">
+              <span className="font-black text-[#050d1a] text-sm leading-none">N</span>
             </div>
-            <span className="font-display font-bold text-xl tracking-tight text-white">NeoBank</span>
-          </Link>
-        </div>
+          </div>
+          <span className="font-black text-white text-lg tracking-tight">Neo<span className="text-primary">Bank</span></span>
+        </Link>
+      </div>
 
-        <nav className="flex-1 px-4 space-y-1 mt-6">
-          {navItems.map((item) => {
-            const isActive = location === item.path;
-            const Icon = item.icon;
-            return (
-              <Link 
-                key={item.path} 
-                href={item.path}
-                className={`
-                  flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 relative group
-                  ${isActive ? 'text-white' : 'text-muted-foreground hover:text-white hover:bg-white/5'}
-                `}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="active-nav-bg"
-                    className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent rounded-xl border border-primary/20"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                <div className="flex items-center gap-3">
-                  <Icon className={`w-5 h-5 relative z-10 transition-colors ${isActive ? 'text-primary' : 'group-hover:text-primary'}`} />
-                  <span className="font-medium relative z-10">{item.label}</span>
-                </div>
-                {item.badge && (
-                  <div className="w-2 h-2 rounded-full bg-primary relative z-10 shadow-[0_0_10px_rgba(0,229,255,0.8)]" />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+      {/* Nav groups */}
+      <nav className="flex-1 px-3 py-3 space-y-5 overflow-y-auto">
+        {navGroups.map((group) => (
+          <div key={group.label}>
+            <p className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/20 select-none">
+              {group.label}
+            </p>
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive = location === item.path;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`
+                      flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 relative group
+                      ${isActive
+                        ? "text-white"
+                        : "text-white/40 hover:text-white/80 hover:bg-white/[0.04]"
+                      }
+                    `}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="active-nav-bg"
+                        className="absolute inset-0 bg-gradient-to-r from-primary/12 via-primary/6 to-transparent rounded-xl border border-primary/15"
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                      />
+                    )}
+                    <div className="flex items-center gap-3 relative z-10">
+                      <Icon className={`w-4 h-4 transition-colors ${isActive ? "text-primary" : "group-hover:text-white/70"}`} />
+                      <span className="text-sm font-medium">{item.label}</span>
+                    </div>
+                    <div className="flex items-center gap-2 relative z-10">
+                      {item.badge && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(0,229,255,0.9)]" />
+                      )}
+                      {isActive && <ChevronRight className="w-3.5 h-3.5 text-primary/50" />}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
 
-        <div className="px-4 pb-4 mt-auto">
-          <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mb-4" />
-          <div className="p-4 rounded-xl bg-white/5 border border-white/5 mb-4 flex items-center gap-3 relative overflow-hidden group">
-            {user?.tier === 'premium' && (
-              <div className="absolute top-0 right-0 p-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                <Crown className="w-12 h-12 text-amber-400/20" />
-              </div>
-            )}
-            <img 
-              src={user?.avatarUrl || `${import.meta.env.BASE_URL}images/avatar.png`} 
-              alt="User" 
-              className="w-10 h-10 rounded-full object-cover border border-white/10 relative z-10"
-              onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&h=100&fit=crop" }}
-            />
-            <div className="flex-1 min-w-0 relative z-10">
-              <p className="text-sm font-semibold truncate text-white">{user?.firstName} {user?.lastName}</p>
-              <div className="flex items-center gap-1">
-                {user?.tier === 'premium' && <Crown className="w-3 h-3 text-amber-400" />}
-                <p className={`text-xs truncate capitalize font-medium ${user?.tier === 'premium' ? 'text-amber-400' : 'text-muted-foreground'}`}>
-                  {user?.tier}
-                </p>
+      {/* Divider */}
+      <div className="mx-5 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+
+      {/* User card */}
+      <div className="p-3 mt-3">
+        <div className={`p-3.5 rounded-2xl border ${tier.border} ${tier.bg} mb-2 relative overflow-hidden`}>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <img
+                src={user?.avatarUrl || `${import.meta.env.BASE_URL}images/avatar.png`}
+                alt="User"
+                className="w-9 h-9 rounded-full object-cover border border-white/10"
+                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&h=100&fit=crop"; }}
+              />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-background" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-white truncate leading-tight">
+                {user?.firstName} {user?.lastName}
+              </p>
+              <div className="flex items-center gap-1 mt-0.5">
+                <Crown className={`w-3 h-3 ${tier.color}`} />
+                <p className={`text-xs font-semibold ${tier.color}`}>{tier.label}</p>
               </div>
             </div>
           </div>
-          <button 
-            onClick={logout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-muted-foreground hover:text-white hover:bg-destructive/10 hover:text-destructive transition-all"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="font-medium">Déconnexion</span>
-          </button>
         </div>
+
+        <button
+          onClick={logout}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-white/30 hover:text-red-400 hover:bg-red-500/8 transition-all text-sm font-medium"
+        >
+          <LogOut className="w-4 h-4" />
+          Déconnexion
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#050d1a] text-foreground flex overflow-hidden">
+      {/* Subtle background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[160px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-600/5 rounded-full blur-[120px]" />
+      </div>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex w-60 flex-col bg-white/[0.025] backdrop-blur-2xl border-r border-white/[0.05] relative z-20 shrink-0">
+        <SidebarContent />
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 relative">
-        <div className="absolute inset-0 bg-mesh opacity-30 z-0 pointer-events-none" />
-        
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Mobile Header */}
-        <header className="lg:hidden flex items-center justify-between p-4 border-b border-white/5 bg-background/80 backdrop-blur-md relative z-20">
+        <header className="lg:hidden flex items-center justify-between px-5 py-4 border-b border-white/[0.05] bg-[#050d1a]/80 backdrop-blur-xl relative z-20">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="font-bold text-white">N</span>
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <span className="font-black text-[#050d1a] text-sm">N</span>
             </div>
+            <span className="font-black text-white text-base tracking-tight">Neo<span className="text-primary">Bank</span></span>
           </Link>
-          <div className="flex items-center gap-4">
-            <button className="text-muted-foreground hover:text-white relative">
-              <Bell className="w-6 h-6" />
-              <div className="absolute top-0 right-0 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(0,229,255,0.8)]" />
+          <div className="flex items-center gap-3">
+            <button className="text-white/40 hover:text-white relative transition-colors">
+              <Bell className="w-5 h-5" />
+              <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(0,229,255,0.9)]" />
             </button>
-            <button onClick={() => setMobileMenuOpen(true)} className="text-white">
-              <Menu className="w-6 h-6" />
+            <button onClick={() => setMobileMenuOpen(true)} className="text-white/60 hover:text-white transition-colors">
+              <Menu className="w-5 h-5" />
             </button>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto relative z-10 custom-scrollbar p-4 md:p-8">
+        <div className="flex-1 overflow-y-auto p-5 md:p-8">
           <motion.div
             key={location}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
             className="max-w-6xl mx-auto"
           >
             {children}
@@ -150,48 +217,32 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </main>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:hidden flex flex-col"
-          >
-            <div className="p-4 flex justify-end border-b border-white/5">
-              <button onClick={() => setMobileMenuOpen(false)} className="text-white p-2">
-                <Menu className="w-6 h-6 rotate-90" />
-              </button>
-            </div>
-            <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link 
-                    key={item.path} 
-                    href={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between px-4 py-4 rounded-xl text-lg font-medium ${location === item.path ? 'bg-primary/10 text-primary' : 'text-white'}`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <Icon className="w-6 h-6" />
-                      {item.label}
-                    </div>
-                    {item.badge && (
-                      <div className="w-2 h-2 rounded-full bg-primary" />
-                    )}
-                  </Link>
-                );
-              })}
-              <div className="pt-8 mt-8 border-t border-white/10">
-                <button onClick={logout} className="flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium text-destructive w-full text-left">
-                  <LogOut className="w-6 h-6" />
-                  Déconnexion
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", stiffness: 400, damping: 40 }}
+              className="fixed top-0 left-0 bottom-0 w-72 z-50 flex flex-col bg-[#070f20] border-r border-white/[0.06] lg:hidden"
+            >
+              <div className="absolute top-4 right-4">
+                <button onClick={() => setMobileMenuOpen(false)} className="text-white/40 hover:text-white p-1 transition-colors">
+                  <X className="w-5 h-5" />
                 </button>
               </div>
-            </nav>
-          </motion.div>
+              <SidebarContent />
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
     </div>
