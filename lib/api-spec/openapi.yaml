@@ -1,22 +1,36 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: NeoBank API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: accounts
+    description: Bank accounts
+  - name: transactions
+    description: Transactions
+  - name: cards
+    description: Bank cards
+  - name: transfers
+    description: Money transfers
+  - name: loans
+    description: Loan products
+  - name: savings
+    description: Savings goals
+  - name: user
+    description: User profile
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +38,220 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/demo-login:
+    post:
+      operationId: demoLogin
+      tags: [auth]
+      summary: Login with demo account
+      responses:
+        "200":
+          description: Demo user session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DemoLoginResponse"
+
+  /accounts:
+    get:
+      operationId: getAccounts
+      tags: [accounts]
+      summary: Get all accounts for current user
+      responses:
+        "200":
+          description: List of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Account"
+
+  /accounts/{accountId}/transactions:
+    get:
+      operationId: getAccountTransactions
+      tags: [transactions]
+      summary: Get transactions for an account
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: number
+        - name: offset
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionList"
+
+  /cards:
+    get:
+      operationId: getCards
+      tags: [cards]
+      summary: Get all cards
+      responses:
+        "200":
+          description: List of cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Card"
+
+  /transfers:
+    post:
+      operationId: createTransfer
+      tags: [transfers]
+      summary: Create a money transfer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferRequest"
+      responses:
+        "200":
+          description: Transfer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransferResponse"
+
+  /loans:
+    get:
+      operationId: getLoanProducts
+      tags: [loans]
+      summary: Get available loan products
+      responses:
+        "200":
+          description: List of loan products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LoanProduct"
+
+  /loans/simulate:
+    post:
+      operationId: simulateLoan
+      tags: [loans]
+      summary: Simulate a loan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoanSimulationRequest"
+      responses:
+        "200":
+          description: Loan simulation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanSimulationResult"
+
+  /loans/applications:
+    get:
+      operationId: getLoanApplications
+      tags: [loans]
+      summary: Get user loan applications
+      responses:
+        "200":
+          description: List of loan applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LoanApplication"
+    post:
+      operationId: createLoanApplication
+      tags: [loans]
+      summary: Submit a loan application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoanApplicationRequest"
+      responses:
+        "200":
+          description: Application submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanApplication"
+
+  /savings:
+    get:
+      operationId: getSavingsGoals
+      tags: [savings]
+      summary: Get savings goals
+      responses:
+        "200":
+          description: List of savings goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SavingsGoal"
+    post:
+      operationId: createSavingsGoal
+      tags: [savings]
+      summary: Create a savings goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSavingsGoalRequest"
+      responses:
+        "200":
+          description: Savings goal created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavingsGoal"
+
+  /user/profile:
+    get:
+      operationId: getUserProfile
+      tags: [user]
+      summary: Get user profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /user/stats:
+    get:
+      operationId: getUserStats
+      tags: [user]
+      summary: Get user financial stats
+      responses:
+        "200":
+          description: User stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserStats"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +259,365 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    DemoLoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        user:
+          $ref: "#/components/schemas/UserProfile"
+        message:
+          type: string
+      required: [success, user, message]
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        avatarUrl:
+          type: string
+        memberSince:
+          type: string
+        tier:
+          type: string
+          enum: [standard, premium, elite]
+        address:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        iban:
+          type: string
+        bic:
+          type: string
+      required: [id, firstName, lastName, email, phone, memberSince, tier]
+
+    UserStats:
+      type: object
+      properties:
+        totalBalance:
+          type: number
+        monthlyIncome:
+          type: number
+        monthlyExpenses:
+          type: number
+        savingsRate:
+          type: number
+        spendingByCategory:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategorySpend"
+        balanceHistory:
+          type: array
+          items:
+            $ref: "#/components/schemas/BalancePoint"
+      required: [totalBalance, monthlyIncome, monthlyExpenses, savingsRate, spendingByCategory, balanceHistory]
+
+    CategorySpend:
+      type: object
+      properties:
+        category:
+          type: string
+        amount:
+          type: number
+        percentage:
+          type: number
+        color:
+          type: string
+      required: [category, amount, percentage, color]
+
+    BalancePoint:
+      type: object
+      properties:
+        date:
+          type: string
+        balance:
+          type: number
+      required: [date, balance]
+
+    Account:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [checking, savings, business, investment]
+        name:
+          type: string
+        iban:
+          type: string
+        balance:
+          type: number
+        currency:
+          type: string
+        color:
+          type: string
+        isDefault:
+          type: boolean
+      required: [id, type, name, iban, balance, currency, isDefault]
+
+    TransactionList:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Transaction"
+        total:
+          type: number
+      required: [transactions, total]
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        date:
+          type: string
+        description:
+          type: string
+        amount:
+          type: number
+        type:
+          type: string
+          enum: [debit, credit]
+        category:
+          type: string
+        merchant:
+          type: string
+        status:
+          type: string
+          enum: [completed, pending, failed]
+        icon:
+          type: string
+      required: [id, date, description, amount, type, category, status]
+
+    Card:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [virtual, physical]
+        network:
+          type: string
+          enum: [visa, mastercard]
+        last4:
+          type: string
+        cardholderName:
+          type: string
+        expiryMonth:
+          type: number
+        expiryYear:
+          type: number
+        isLocked:
+          type: boolean
+        creditLimit:
+          type: number
+        currentBalance:
+          type: number
+        color:
+          type: string
+        accountId:
+          type: string
+      required: [id, type, network, last4, cardholderName, expiryMonth, expiryYear, isLocked, accountId]
+
+    TransferRequest:
+      type: object
+      properties:
+        fromAccountId:
+          type: string
+        toIban:
+          type: string
+        toName:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        description:
+          type: string
+      required: [fromAccountId, toIban, toName, amount, currency]
+
+    TransferResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        transactionId:
+          type: string
+        message:
+          type: string
+      required: [success, transactionId, message]
+
+    LoanProduct:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [personal, auto, mortgage, business, student]
+        minAmount:
+          type: number
+        maxAmount:
+          type: number
+        minDurationMonths:
+          type: number
+        maxDurationMonths:
+          type: number
+        minRate:
+          type: number
+        maxRate:
+          type: number
+        description:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+      required: [id, name, type, minAmount, maxAmount, minDurationMonths, maxDurationMonths, minRate, maxRate, description, features]
+
+    LoanSimulationRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+        amount:
+          type: number
+        durationMonths:
+          type: number
+      required: [productId, amount, durationMonths]
+
+    LoanSimulationResult:
+      type: object
+      properties:
+        monthlyPayment:
+          type: number
+        totalRepayment:
+          type: number
+        totalInterest:
+          type: number
+        annualRate:
+          type: number
+        schedule:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentScheduleEntry"
+      required: [monthlyPayment, totalRepayment, totalInterest, annualRate, schedule]
+
+    PaymentScheduleEntry:
+      type: object
+      properties:
+        month:
+          type: number
+        payment:
+          type: number
+        principal:
+          type: number
+        interest:
+          type: number
+        remainingBalance:
+          type: number
+      required: [month, payment, principal, interest, remainingBalance]
+
+    LoanApplicationRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+        amount:
+          type: number
+        durationMonths:
+          type: number
+        purpose:
+          type: string
+        employmentType:
+          type: string
+        monthlyIncome:
+          type: number
+      required: [productId, amount, durationMonths, purpose, employmentType, monthlyIncome]
+
+    LoanApplication:
+      type: object
+      properties:
+        id:
+          type: string
+        productId:
+          type: string
+        productName:
+          type: string
+        amount:
+          type: number
+        durationMonths:
+          type: number
+        monthlyPayment:
+          type: number
+        annualRate:
+          type: number
+        status:
+          type: string
+          enum: [pending, approved, rejected, active, closed]
+        appliedAt:
+          type: string
+        purpose:
+          type: string
+      required: [id, productId, productName, amount, durationMonths, monthlyPayment, annualRate, status, appliedAt, purpose]
+
+    SavingsGoal:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        targetAmount:
+          type: number
+        currentAmount:
+          type: number
+        targetDate:
+          type: string
+        category:
+          type: string
+        color:
+          type: string
+        autoSaveAmount:
+          type: number
+        autoSaveFrequency:
+          type: string
+          enum: [weekly, monthly, none]
+      required: [id, name, targetAmount, currentAmount, targetDate, category, color]
+
+    CreateSavingsGoalRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        targetAmount:
+          type: number
+        targetDate:
+          type: string
+        category:
+          type: string
+        autoSaveAmount:
+          type: number
+        autoSaveFrequency:
+          type: string
+          enum: [weekly, monthly, none]
+      required: [name, targetAmount, targetDate, category]

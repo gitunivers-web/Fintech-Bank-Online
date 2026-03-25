@@ -1,0 +1,22 @@
+packages:
+  "framer-motion": "For page transitions and interactive micro-animations"
+  "recharts": "For premium financial data visualization (charts)"
+  "date-fns": "For elegant date formatting in transaction lists"
+  "react-hook-form": "For robust transfer and loan applications"
+  "@hookform/resolvers": "For zod validation integration"
+
+images:
+  - path: "artifacts/neobank/public/images/hero-bg.png"
+    description: "Dark premium abstract geometric mesh background in deep navy blue and bright cyan with soft light leaks and glassmorphism style"
+    aspect_ratio: "16:9"
+  - path: "artifacts/neobank/public/images/card-texture.png"
+    description: "Sleek dark metallic brushed titanium texture for a premium credit card background with subtle diagonal light reflection"
+    aspect_ratio: "16:9"
+  - path: "artifacts/neobank/public/images/avatar.png"
+    description: "Premium illustrated 3D avatar of a professional in a modern minimal style, dark background, neon rim lighting"
+    aspect_ratio: "1:1"
+
+notes:
+  - Using generated hooks from @workspace/api-client-react for all data fetching
+  - Using React context to manage the demo authentication state globally
+  - Strict dark mode fintech theme applied
