@@ -1,13 +1,14 @@
 import { AppLayout } from "@/components/layout";
 import { useGetAccountTransactions } from "@workspace/api-client-react";
 import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { Search, Filter, ArrowDownRight, ArrowUpRight } from "lucide-react";
 
 export default function Transactions() {
   const { data, isLoading } = useGetAccountTransactions("all", { limit: 50 });
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
   };
 
   return (
@@ -15,19 +16,19 @@ export default function Transactions() {
       <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white tracking-tight">Transactions</h1>
-          <p className="text-muted-foreground mt-1">Review and search your entire history.</p>
+          <p className="text-muted-foreground mt-1">Consultez et recherchez tout votre historique.</p>
         </div>
         <div className="flex gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text" 
-              placeholder="Search..." 
+              placeholder="Rechercher..." 
               className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-white outline-none focus:border-primary/50 transition-colors"
             />
           </div>
           <button className="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white flex items-center gap-2 hover:bg-white/10 transition-colors">
-            <Filter className="w-4 h-4" /> Filter
+            <Filter className="w-4 h-4" /> Filtres
           </button>
         </div>
       </div>
@@ -38,20 +39,20 @@ export default function Transactions() {
             <thead>
               <tr className="border-b border-white/5 bg-white/5 text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                 <th className="p-4 pl-6">Transaction</th>
-                <th className="p-4">Category</th>
-                <th className="p-4">Date & Time</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 pr-6 text-right">Amount</th>
+                <th className="p-4">Catégorie</th>
+                <th className="p-4">Date & Heure</th>
+                <th className="p-4">Statut</th>
+                <th className="p-4 pr-6 text-right">Montant</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-muted-foreground">Loading...</td>
+                  <td colSpan={5} className="p-8 text-center text-muted-foreground">Chargement...</td>
                 </tr>
               ) : data?.transactions.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-muted-foreground">No transactions found.</td>
+                  <td colSpan={5} className="p-8 text-center text-muted-foreground">Aucune transaction trouvée.</td>
                 </tr>
               ) : (
                 data?.transactions.map((tx) => (
@@ -63,34 +64,34 @@ export default function Transactions() {
                         </div>
                         <div>
                           <p className="font-semibold text-white">{tx.merchant || tx.description}</p>
-                          <p className="text-xs text-muted-foreground">{tx.id.substring(0,8)}</p>
+                          <p className="text-xs text-muted-foreground uppercase tracking-widest">{tx.id.substring(0,8)}</p>
                         </div>
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className="px-3 py-1 rounded-full bg-white/10 border border-white/5 text-xs text-white/80">
+                      <span className="px-3 py-1 rounded-full bg-white/10 border border-white/5 text-xs text-white/80 capitalize">
                         {tx.category}
                       </span>
                     </td>
-                    <td className="p-4 text-sm text-muted-foreground">
-                      {format(new Date(tx.date), 'MMM dd, yyyy')}<br/>
-                      <span className="text-xs">{format(new Date(tx.date), 'hh:mm a')}</span>
+                    <td className="p-4 text-sm text-muted-foreground capitalize">
+                      {format(new Date(tx.date), 'dd MMM yyyy', { locale: fr })}<br/>
+                      <span className="text-xs">{format(new Date(tx.date), 'HH:mm')}</span>
                     </td>
                     <td className="p-4">
-                      <span className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1 ${
+                      <span className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
                         tx.status === 'completed' ? 'text-emerald-400' : 
                         tx.status === 'pending' ? 'text-amber-400' : 'text-destructive'
                       }`}>
                         <div className={`w-1.5 h-1.5 rounded-full ${
-                          tx.status === 'completed' ? 'bg-emerald-400' : 
+                          tx.status === 'completed' ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 
                           tx.status === 'pending' ? 'bg-amber-400' : 'bg-destructive'
                         }`} />
-                        {tx.status}
+                        {tx.status === 'completed' ? 'Complété' : tx.status === 'pending' ? 'En attente' : 'Échoué'}
                       </span>
                     </td>
                     <td className="p-4 pr-6 text-right">
                       <div className="flex flex-col items-end">
-                        <span className={`font-bold flex items-center gap-1 ${tx.type === 'credit' ? 'text-emerald-400' : 'text-white'}`}>
+                        <span className={`font-bold flex items-center gap-1 text-lg tracking-tight ${tx.type === 'credit' ? 'text-emerald-400' : 'text-white'}`}>
                           {tx.type === 'credit' ? <ArrowDownRight className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4 text-white/40" />}
                           {tx.type === 'credit' ? '+' : '-'}{formatCurrency(tx.amount)}
                         </span>
@@ -105,10 +106,10 @@ export default function Transactions() {
         
         {/* Pagination mock */}
         <div className="p-4 border-t border-white/5 flex items-center justify-between text-sm text-muted-foreground bg-black/20">
-          <span>Showing 1 to {data?.transactions.length || 0} of {data?.total || 0} entries</span>
+          <span>Affichage de 1 à {data?.transactions.length || 0} sur {data?.total || 0} entrées</span>
           <div className="flex gap-2">
-            <button className="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-md transition-colors disabled:opacity-50">Prev</button>
-            <button className="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-md transition-colors">Next</button>
+            <button className="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-md transition-colors disabled:opacity-50">Précédent</button>
+            <button className="px-3 py-1 bg-white/5 hover:bg-white/10 rounded-md transition-colors">Suivant</button>
           </div>
         </div>
       </div>
