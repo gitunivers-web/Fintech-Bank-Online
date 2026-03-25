@@ -1,11 +1,69 @@
 import { Link } from "wouter";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import {
   ArrowRight, ShieldCheck, Zap, Globe, Smartphone,
   ChevronRight, Check, TrendingUp, Lock, Wifi,
   CreditCard, BadgeCheck, Star
 } from "lucide-react";
+
+// ─── Animated counter ────────────────────────────────────────────────────────
+function useCountUp(target: number, duration = 1600, delay = 600) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    const start = Date.now() + delay;
+    let raf: number;
+    const tick = () => {
+      const now = Date.now();
+      if (now < start) { raf = requestAnimationFrame(tick); return; }
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      setValue(Math.round(eased * target));
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration, delay]);
+  return value;
+}
+
+// ─── Transaction ticker ───────────────────────────────────────────────────────
+const tickerItems = [
+  { label: "Virement SEPA reçu", amount: "+2 450,00 €", color: "text-emerald-400", from: "Entreprise Dupont" },
+  { label: "Paiement Visa", amount: "-89,50 €", color: "text-white/70", from: "FNAC Paris" },
+  { label: "Virement instantané", amount: "+500,00 €", color: "text-emerald-400", from: "Marie Laurent" },
+  { label: "Prélèvement EDF", amount: "-124,30 €", color: "text-white/70", from: "EDF Énergie" },
+  { label: "Cashback reçu", amount: "+12,40 €", color: "text-primary", from: "NeoBank Rewards" },
+  { label: "Sans contact Visa", amount: "-34,90 €", color: "text-white/70", from: "Monoprix Opéra" },
+  { label: "Épargne automatique", amount: "-200,00 €", color: "text-violet-400", from: "Livret Épargne" },
+  { label: "Dividende reçu", amount: "+47,30 €", color: "text-emerald-400", from: "Portefeuille ETF" },
+];
+
+function Ticker() {
+  const repeated = [...tickerItems, ...tickerItems];
+  return (
+    <div className="relative overflow-hidden py-4 border-y border-white/[0.05] bg-white/[0.015]">
+      <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#050d1a] to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#050d1a] to-transparent z-10 pointer-events-none" />
+      <motion.div
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+        className="flex gap-8 whitespace-nowrap w-max"
+      >
+        {repeated.map((item, i) => (
+          <div key={i} className="flex items-center gap-3 px-5 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+            <div className="w-1.5 h-1.5 rounded-full bg-current opacity-60" style={{ color: item.color.replace("text-", "") === "emerald-400" ? "#34d399" : item.color.replace("text-", "") === "primary" ? "#00e5ff" : item.color.replace("text-", "") === "violet-400" ? "#a78bfa" : "#ffffff" }} />
+            <span className="text-xs text-white/40 font-medium">{item.from}</span>
+            <span className="text-xs text-white/25">·</span>
+            <span className="text-xs text-white/60">{item.label}</span>
+            <span className={`text-xs font-bold ${item.color}`}>{item.amount}</span>
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
 
 // ─── Floating info bubbles that cycle around the cards ───────────────────────
 const infoBubbles = [
@@ -170,6 +228,99 @@ function Navbar() {
   );
 }
 
+// ─── Hero cards with tilt 3D ─────────────────────────────────────────────────
+function HeroCards() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 180, damping: 28 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), { stiffness: 180, damping: 28 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  const balance = useCountUp(124500, 1800, 700);
+  const formatted = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(balance);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      initial={{ opacity: 0, scale: 0.92 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="flex-1 relative w-full max-w-lg aspect-square cursor-none"
+      style={{ perspective: 1200 }}
+    >
+      <motion.div
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        className="relative w-full h-full"
+      >
+        {/* Glow */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/15 to-violet-500/15 rounded-full blur-[100px]" />
+
+        {/* Balance card */}
+        <motion.div
+          animate={{ y: [0, -20, 0] }}
+          transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+          className="absolute top-1/4 left-0 w-64 h-40 rounded-2xl glass-panel p-6 flex flex-col justify-between overflow-hidden"
+          style={{ translateZ: 20 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent z-0" />
+          <div className="relative z-10 flex justify-between items-start">
+            <div className="w-10 h-6 bg-white/20 rounded-md" />
+            <Zap className="text-primary w-6 h-6" />
+          </div>
+          <div className="relative z-10">
+            <p className="text-white/60 text-xs mb-1 uppercase tracking-wider font-medium">Solde Total</p>
+            <p className="text-white font-bold text-2xl tabular-nums">{formatted}</p>
+          </div>
+        </motion.div>
+
+        {/* NEO card */}
+        <motion.div
+          animate={{ y: [0, 20, 0] }}
+          transition={{ repeat: Infinity, duration: 7, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-1/4 right-0 w-72 h-48 rounded-2xl bg-gradient-to-br from-secondary to-background border border-white/10 shadow-2xl p-6 flex flex-col justify-between"
+          style={{
+            backgroundImage: `url(${import.meta.env.BASE_URL}images/card-texture.png)`,
+            backgroundSize: "cover",
+            backgroundBlendMode: "overlay",
+            translateZ: 40,
+          }}
+        >
+          <div className="flex justify-between items-center">
+            <span className="font-bold text-lg tracking-widest text-white/90">NEO</span>
+            <Globe className="text-white/50 w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-white/80 font-mono tracking-[0.2em] mb-2 text-lg">•••• •••• •••• 4092</p>
+            <div className="flex justify-between text-xs text-white/60 uppercase tracking-wider font-medium">
+              <span>Alex Carter</span>
+              <span>12/28</span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Floating info bubbles */}
+        {infoBubbles.map((bubble, i) => (
+          <FloatingBubble key={bubble.id} bubble={bubble} delay={i * 3200} />
+        ))}
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function Landing() {
   return (
@@ -266,62 +417,8 @@ export default function Landing() {
             </div>
           </motion.div>
 
-          {/* Right: animated cards + floating info bubbles */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="flex-1 relative w-full max-w-lg aspect-square"
-          >
-            {/* Glow behind cards */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/15 to-violet-500/15 rounded-full blur-[100px]" />
-
-            {/* ── Balance card (unchanged) ── */}
-            <motion.div
-              animate={{ y: [0, -20, 0] }}
-              transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-              className="absolute top-1/4 left-0 w-64 h-40 rounded-2xl glass-panel p-6 flex flex-col justify-between overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent z-0" />
-              <div className="relative z-10 flex justify-between items-start">
-                <div className="w-10 h-6 bg-white/20 rounded-md" />
-                <Zap className="text-primary w-6 h-6" />
-              </div>
-              <div className="relative z-10">
-                <p className="text-white/60 text-xs mb-1 uppercase tracking-wider font-medium">Solde Total</p>
-                <p className="text-white font-bold text-2xl">124 500,00 €</p>
-              </div>
-            </motion.div>
-
-            {/* ── NEO card (unchanged) ── */}
-            <motion.div
-              animate={{ y: [0, 20, 0] }}
-              transition={{ repeat: Infinity, duration: 7, ease: "easeInOut", delay: 1 }}
-              className="absolute bottom-1/4 right-0 w-72 h-48 rounded-2xl bg-gradient-to-br from-secondary to-background border border-white/10 shadow-2xl p-6 flex flex-col justify-between"
-              style={{
-                backgroundImage: `url(${import.meta.env.BASE_URL}images/card-texture.png)`,
-                backgroundSize: "cover",
-                backgroundBlendMode: "overlay",
-              }}
-            >
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-lg tracking-widest text-white/90">NEO</span>
-                <Globe className="text-white/50 w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-white/80 font-mono tracking-[0.2em] mb-2 text-lg">•••• •••• •••• 4092</p>
-                <div className="flex justify-between text-xs text-white/60 uppercase tracking-wider font-medium">
-                  <span>Alex Carter</span>
-                  <span>12/28</span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* ── Floating info bubbles ── */}
-            {infoBubbles.map((bubble, i) => (
-              <FloatingBubble key={bubble.id} bubble={bubble} delay={i * 3200} />
-            ))}
-          </motion.div>
+          {/* Right: tilt 3D cards */}
+          <HeroCards />
         </div>
 
         {/* Scroll indicator */}
@@ -339,6 +436,9 @@ export default function Landing() {
           />
         </motion.div>
       </section>
+
+      {/* ── Transaction ticker ── */}
+      <Ticker />
 
       {/* ── Stats bar ── */}
       <section className="relative z-10 border-y border-white/[0.06] bg-white/[0.02] backdrop-blur-xl">
