@@ -73,7 +73,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <Link href="/dashboard" className="flex items-center gap-2.5 group" onClick={() => setMobileMenuOpen(false)}>
           <div className="relative">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary via-sky-400 to-accent flex items-center justify-center shadow-lg shadow-primary/25">
-              <span className="font-black text-[#050d1a] text-sm leading-none">N</span>
+              <span className="font-black text-[#050d1a] text-sm leading-none">K</span>
             </div>
           </div>
           <span className="font-black text-white text-lg tracking-tight">Kova<span className="text-primary">Bank</span></span>
@@ -188,7 +188,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <header className="lg:hidden flex items-center justify-between px-5 py-4 border-b border-white/[0.05] bg-[#050d1a]/80 backdrop-blur-xl relative z-20">
           <Link href="/dashboard" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="font-black text-[#050d1a] text-sm">N</span>
+              <span className="font-black text-[#050d1a] text-sm">K</span>
             </div>
             <span className="font-black text-white text-base tracking-tight">Kova<span className="text-primary">Bank</span></span>
           </Link>

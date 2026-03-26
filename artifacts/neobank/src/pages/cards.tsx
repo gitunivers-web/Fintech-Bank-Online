@@ -92,7 +92,7 @@ export default function Cards() {
 
                   <div className="relative z-10 p-6 flex flex-col h-full justify-between">
                     <div className="flex justify-between items-start">
-                      <span className="font-bold text-xl tracking-widest text-white drop-shadow-md">NEO</span>
+                      <span className="font-bold text-xl tracking-widest text-white drop-shadow-md">KOVA</span>
                       <Wifi className="w-6 h-6 text-white/80 rotate-90" />
                     </div>
                     

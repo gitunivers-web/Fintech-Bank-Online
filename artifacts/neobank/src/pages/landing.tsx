@@ -183,7 +183,7 @@ function Navbar() {
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary via-sky-400 to-accent flex items-center justify-center shadow-lg shadow-primary/30">
-              <span className="font-black text-white text-base leading-none tracking-tighter">N</span>
+              <span className="font-black text-white text-base leading-none tracking-tighter">K</span>
             </div>
             <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-br from-primary to-accent opacity-30 blur-sm -z-10" />
           </div>
@@ -300,7 +300,7 @@ function HeroCards() {
           }}
         >
           <div className="flex justify-between items-center">
-            <span className="font-bold text-lg tracking-widest text-white/90">NEO</span>
+            <span className="font-bold text-lg tracking-widest text-white/90">KOVA</span>
             <Globe className="text-white/50 w-6 h-6" />
           </div>
           <div>
