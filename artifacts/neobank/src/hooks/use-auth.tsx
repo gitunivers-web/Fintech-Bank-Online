@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: "demo-123",
         firstName: "Alex",
         lastName: "Carter",
-        email: "alex@neobank.demo",
+        email: "alex@kovabank.com",
         phone: "+1 555 0192",
         memberSince: new Date().toISOString(),
         tier: "premium",

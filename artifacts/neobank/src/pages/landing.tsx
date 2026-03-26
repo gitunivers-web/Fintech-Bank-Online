@@ -30,14 +30,14 @@ function useCountUp(target: number, duration = 1600, delay = 600) {
 
 // ─── Transaction ticker ───────────────────────────────────────────────────────
 const tickerItems = [
-  { label: "Virement SEPA reçu", amount: "+2 450,00 €", color: "text-emerald-400", from: "Entreprise Dupont" },
-  { label: "Paiement Visa", amount: "-89,50 €", color: "text-white/70", from: "FNAC Paris" },
-  { label: "Virement instantané", amount: "+500,00 €", color: "text-emerald-400", from: "Marie Laurent" },
-  { label: "Prélèvement EDF", amount: "-124,30 €", color: "text-white/70", from: "EDF Énergie" },
-  { label: "Cashback reçu", amount: "+12,40 €", color: "text-primary", from: "NeoBank Rewards" },
-  { label: "Sans contact Visa", amount: "-34,90 €", color: "text-white/70", from: "Monoprix Opéra" },
-  { label: "Épargne automatique", amount: "-200,00 €", color: "text-violet-400", from: "Livret Épargne" },
-  { label: "Dividende reçu", amount: "+47,30 €", color: "text-emerald-400", from: "Portefeuille ETF" },
+  { label: "Virement SWIFT reçu", amount: "+48 200,00 $", color: "text-emerald-400", from: "Holdings Group LLC" },
+  { label: "Conversion EUR→CHF", amount: "250 000 €", color: "text-primary", from: "Change de devises" },
+  { label: "Dividende ETF S&P500", amount: "+3 840,00 $", color: "text-emerald-400", from: "KovaBank Invest" },
+  { label: "Virement SEPA entrant", amount: "+12 500,00 €", color: "text-emerald-400", from: "Société Générale" },
+  { label: "Or physique alloué", amount: "50 000,00 $", color: "text-amber-400", from: "KovaBank Vault" },
+  { label: "Paiement Visa Infinite", amount: "-4 290,00 €", color: "text-white/70", from: "Four Seasons Genève" },
+  { label: "Obligation EUR 3,8%", amount: "+1 420,00 €", color: "text-emerald-400", from: "Portefeuille Obligat." },
+  { label: "Conversion USD→GBP", amount: "80 000 $", color: "text-primary", from: "Change de devises" },
 ];
 
 function Ticker() {
@@ -187,7 +187,7 @@ function Navbar() {
             </div>
             <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-br from-primary to-accent opacity-30 blur-sm -z-10" />
           </div>
-          <span className="font-black text-white text-xl tracking-tight">Neo<span className="text-primary">Bank</span></span>
+          <span className="font-black text-white text-xl tracking-tight">Kova<span className="text-primary">Bank</span></span>
         </div>
 
         {/* Links */}
@@ -365,23 +365,23 @@ export default function Landing() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
               </span>
-              <span className="text-primary text-xs font-bold tracking-widest uppercase">Agréé ACPR · Fonds garantis jusqu'à 100 000 €</span>
+              <span className="text-primary text-xs font-bold tracking-widest uppercase">Régulé FSA · Îles Caïmans · CIMA · Multi-devises</span>
             </motion.div>
 
             {/* Headline */}
             <h1 className="text-[clamp(3rem,7vw,5.5rem)] font-black text-white leading-[1.05] tracking-tight mb-6">
-              La banque
+              Votre patrimoine,
               <br />
               <span
                 className="bg-gradient-to-r from-primary via-sky-300 to-violet-400 bg-clip-text text-transparent"
               >
-                réinventée.
+                sans frontières.
               </span>
             </h1>
 
             <p className="text-lg md:text-xl text-white/50 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0">
-              Virements instantanés, épargne intelligente et crédits en temps réel.
-              Une expérience bancaire d'exception, sans compromis.
+              Banque offshore de premier ordre. Comptes multi-devises, gestion de patrimoine internationale
+              et confidentialité absolue — depuis les Îles Caïmans.
             </p>
 
             {/* Buttons */}
@@ -405,9 +405,9 @@ export default function Landing() {
             {/* Trust badges */}
             <div className="flex items-center gap-6 justify-center lg:justify-start">
               {[
-                { icon: <ShieldCheck className="w-4 h-4 text-emerald-400" />, text: "Sécurité bancaire" },
-                { icon: <Star className="w-4 h-4 text-amber-400" />, text: "4.9 App Store" },
-                { icon: <BadgeCheck className="w-4 h-4 text-primary" />, text: "Certifié ISO 27001" },
+                { icon: <ShieldCheck className="w-4 h-4 text-emerald-400" />, text: "Confidentialité totale" },
+                { icon: <Star className="w-4 h-4 text-amber-400" />, text: "Multi-devises 35+" },
+                { icon: <BadgeCheck className="w-4 h-4 text-primary" />, text: "Régulé FSA CIMA" },
               ].map((b, i) => (
                 <div key={i} className="flex items-center gap-1.5 text-xs text-white/40 font-medium">
                   {b.icon}
@@ -445,10 +445,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { value: "500 000+", label: "Clients actifs" },
-              { value: "2 Md €+", label: "Transférés" },
-              { value: "4.9 / 5", label: "Note App Store" },
-              { value: "98 %", label: "Satisfaction client" },
+              { value: "12 000+", label: "Clients privés" },
+              { value: "4,2 Md $+", label: "Actifs gérés" },
+              { value: "35+", label: "Devises supportées" },
+              { value: "99,98 %", label: "Disponibilité SLA" },
             ].map((stat, i) => (
               <motion.div
                 key={i}
@@ -478,17 +478,17 @@ export default function Landing() {
           >
             <p className="text-primary text-xs font-bold uppercase tracking-[0.25em] mb-4">Fonctionnalités</p>
             <h2 className="text-4xl md:text-5xl font-black text-white mb-5 tracking-tight">Tout ce dont vous avez besoin</h2>
-            <p className="text-lg text-white/40 max-w-xl mx-auto">Une suite complète d'outils financiers pour gérer, faire fructifier et protéger votre argent.</p>
+            <p className="text-lg text-white/40 max-w-xl mx-auto">Une infrastructure bancaire offshore de premier ordre, pensée pour les clients privés exigeants.</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
-              { icon: Globe, title: "Comptes & Virements", desc: "Envoyez et recevez de l'argent instantanément, sans frais cachés à l'international." },
-              { icon: CreditCard, title: "Cartes Intelligentes", desc: "Cartes virtuelles et physiques. Verrouillez-les en un clic depuis l'application." },
-              { icon: Zap, title: "Épargne Automatique", desc: "Définissez des objectifs et arrondissez vos dépenses pour épargner sans y penser." },
-              { icon: TrendingUp, title: "Crédits Instantanés", desc: "Financez vos projets personnels ou professionnels avec des réponses en temps réel." },
-              { icon: Smartphone, title: "Investissements", desc: "Gérez votre portefeuille, achetez des ETF et des actions en quelques secondes." },
-              { icon: ShieldCheck, title: "Sécurité Avancée", desc: "Authentification 2FA, biométrie et chiffrement de bout en bout pour votre protection." },
+              { icon: Globe, title: "Comptes Multi-devises", desc: "Ouvrez des comptes en USD, EUR, CHF, GBP et 31 autres devises en quelques minutes." },
+              { icon: Lock, title: "Confidentialité Absolue", desc: "Juridiction offshore, secret bancaire renforcé et protection de vos données garantie." },
+              { icon: CreditCard, title: "Cartes Métal Mondiales", desc: "Cartes Visa Infinite acceptées dans 200+ pays, sans frais de conversion de devises." },
+              { icon: TrendingUp, title: "Gestion de Patrimoine", desc: "Portefeuilles d'investissement sur mesure, ETF, obligations et métaux précieux." },
+              { icon: Zap, title: "Virements SWIFT/SEPA", desc: "Transferts internationaux instantanés vers 180 pays, frais fixes et transparents." },
+              { icon: ShieldCheck, title: "Structure Réglementée", desc: "Agréé FSA et CIMA aux Îles Caïmans. Audit annuel indépendant de vos comptes." },
             ].map((f, i) => (
               <motion.div
                 key={i}
@@ -520,16 +520,16 @@ export default function Landing() {
             className="text-center mb-20"
           >
             <p className="text-primary text-xs font-bold uppercase tracking-[0.25em] mb-4">Démarrage rapide</p>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 tracking-tight">Ouverture en 3 minutes</h2>
-            <p className="text-lg text-white/40 max-w-xl mx-auto">Oubliez la paperasse. Ouvrez votre compte depuis votre smartphone en quelques étapes.</p>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-5 tracking-tight">Accès en 3 étapes</h2>
+            <p className="text-lg text-white/40 max-w-xl mx-auto">Un processus d'intégration rapide et sécurisé, conforme aux exigences réglementaires internationales.</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             <div className="hidden md:block absolute top-[3.5rem] left-[20%] right-[20%] h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
             {[
-              { step: "01", title: "Créez votre compte", desc: "Entrez vos informations de base en toute sécurité. Aucun document papier requis." },
-              { step: "02", title: "Vérifiez votre identité", desc: "Photographiez votre pièce d'identité et un selfie pour validation immédiate par IA." },
-              { step: "03", title: "Commencez à utiliser", desc: "Votre carte virtuelle est instantanément disponible. Provisionnez et c'est parti !" },
+              { step: "01", title: "Demande d'adhésion", desc: "Soumettez votre dossier en ligne. Un conseiller privé vous contacte sous 24 heures." },
+              { step: "02", title: "Vérification KYC/AML", desc: "Vérification d'identité sécurisée conforme aux normes FATF. Confidentialité garantie." },
+              { step: "03", title: "Accès immédiat", desc: "Compte multi-devises actif, carte Visa Infinite émise et conseiller dédié assigné." },
             ].map((step, i) => (
               <motion.div
                 key={i}
@@ -575,15 +575,15 @@ export default function Landing() {
               className="p-8 rounded-3xl border border-white/[0.07] bg-white/[0.03] flex flex-col"
             >
               <div className="mb-8">
-                <h3 className="text-xl font-bold text-white mb-1">Standard</h3>
-                <p className="text-white/35 text-sm">Pour débuter</p>
+                <h3 className="text-xl font-bold text-white mb-1">Essentiel</h3>
+                <p className="text-white/35 text-sm">Entrée dans le privé</p>
               </div>
               <div className="mb-8">
-                <span className="text-5xl font-black text-white">0 €</span>
+                <span className="text-5xl font-black text-white">29 $</span>
                 <span className="text-white/35 text-sm"> / mois</span>
               </div>
               <ul className="space-y-4 mb-10 flex-1">
-                {["1 compte courant", "1 carte physique", "Virements standards", "Support standard"].map((item, j) => (
+                {["1 compte multi-devises", "Carte Visa Infinite", "Virements SWIFT/SEPA", "Support 24/7"].map((item, j) => (
                   <li key={j} className="flex items-center gap-3 text-white/60 text-sm">
                     <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                     {item}
@@ -591,7 +591,7 @@ export default function Landing() {
                 ))}
               </ul>
               <Link href="/login" className="w-full py-3.5 rounded-xl font-bold text-sm bg-white/[0.06] hover:bg-white/[0.1] text-white transition-all border border-white/[0.08] text-center block">
-                Commencer gratuitement
+                Ouvrir un compte
               </Link>
             </motion.div>
 
@@ -609,15 +609,15 @@ export default function Landing() {
                   Le plus populaire
                 </div>
                 <div className="mb-8 mt-2">
-                  <h3 className="text-xl font-bold text-white mb-1">Premium</h3>
-                  <p className="text-primary/70 text-sm">Pour aller plus loin</p>
+                  <h3 className="text-xl font-bold text-white mb-1">Privé</h3>
+                  <p className="text-primary/70 text-sm">Banque privée complète</p>
                 </div>
                 <div className="mb-8">
-                  <span className="text-5xl font-black text-white">9,99 €</span>
+                  <span className="text-5xl font-black text-white">149 $</span>
                   <span className="text-white/35 text-sm"> / mois</span>
                 </div>
                 <ul className="space-y-4 mb-10 flex-1">
-                  {["Jusqu'à 3 comptes", "2 cartes premium", "Virements instantanés gratuits", "Support prioritaire 24/7"].map((item, j) => (
+                  {["5 comptes multi-devises", "2 cartes métal Infinite", "SWIFT gratuits illimités", "Conseiller privé dédié"].map((item, j) => (
                     <li key={j} className="flex items-center gap-3 text-white text-sm">
                       <Check className="w-4 h-4 text-primary flex-shrink-0" />
                       {item}
@@ -639,15 +639,15 @@ export default function Landing() {
               className="p-8 rounded-3xl border border-amber-400/20 bg-white/[0.03] flex flex-col"
             >
               <div className="mb-8">
-                <h3 className="text-xl font-bold text-white mb-1">Elite</h3>
-                <p className="text-amber-400/70 text-sm">Expérience exclusive</p>
+                <h3 className="text-xl font-bold text-white mb-1">Patrimoine</h3>
+                <p className="text-amber-400/70 text-sm">Gestion de fortune</p>
               </div>
               <div className="mb-8">
-                <span className="text-5xl font-black text-white">19,99 €</span>
+                <span className="text-5xl font-black text-white">490 $</span>
                 <span className="text-white/35 text-sm"> / mois</span>
               </div>
               <ul className="space-y-4 mb-10 flex-1">
-                {["Comptes illimités", "5 cartes métal exclusives", "0 % frais de change", "Conseiller dédié"].map((item, j) => (
+                {["Comptes illimités 35 devises", "Cartes métal nominatives", "0 % frais de change", "Family office & structuration"].map((item, j) => (
                   <li key={j} className="flex items-center gap-3 text-white/80 text-sm">
                     <Check className="w-4 h-4 text-amber-400 flex-shrink-0" />
                     {item}
@@ -727,13 +727,13 @@ export default function Landing() {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-[#071525] to-violet-900/20" />
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
             <div className="relative z-10 p-14 md:p-20 text-center">
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-5 tracking-tight">Prêt à rejoindre NeoBank ?</h2>
-              <p className="text-lg text-white/50 mb-10 max-w-2xl mx-auto">Rejoignez plus de 500 000 clients et reprenez le contrôle de vos finances dès aujourd'hui.</p>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-5 tracking-tight">Rejoindre KovaBank ?</h2>
+              <p className="text-lg text-white/50 mb-10 max-w-2xl mx-auto">Intégrez une communauté exclusive de clients privés et gérez votre patrimoine international depuis une seule interface.</p>
               <Link
                 href="/login"
                 className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-bold bg-white text-[#050d1a] hover:bg-white/90 transition-all text-base shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:scale-105"
               >
-                Essayer la démo gratuitement <ArrowRight className="w-5 h-5" />
+                Accéder à la démo <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </motion.div>
@@ -747,21 +747,21 @@ export default function Landing() {
             <div className="col-span-2">
               <div className="flex items-center gap-2.5 mb-5">
                 <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                  <span className="font-black text-[#050d1a] text-sm">N</span>
+                  <span className="font-black text-[#050d1a] text-sm">K</span>
                 </div>
-                <span className="font-black text-white text-lg tracking-tight">Neo<span className="text-primary">Bank</span></span>
+                <span className="font-black text-white text-lg tracking-tight">Kova<span className="text-primary">Bank</span></span>
               </div>
               <p className="text-white/35 text-sm leading-relaxed max-w-xs">
-                La nouvelle génération de services bancaires, accessible à tous, sans compromis.
+                Banque offshore privée. Comptes multi-devises, gestion de patrimoine et confidentialité internationale.
               </p>
               <p className="text-white/20 text-xs mt-6 leading-relaxed">
-                Agréé par l'ACPR. Dépôts garantis jusqu'à 100 000 € par le FGDR.
+                Régulé par la FSA et la CIMA — Îles Caïmans. Juridiction internationale reconnue.
               </p>
             </div>
             {[
-              { title: "Produits", links: ["Comptes Courants", "Cartes Métal", "Épargne", "Crédits", "Investissements"] },
-              { title: "Société", links: ["À propos", "Carrières", "Presse", "Blog"] },
-              { title: "Légal", links: ["CGU", "Confidentialité", "Sécurité", "Cookies", "Tarifaire"] },
+              { title: "Services", links: ["Comptes Multi-devises", "Cartes Visa Infinite", "Gestion Patrimoniale", "SWIFT & SEPA", "Métaux Précieux"] },
+              { title: "Société", links: ["À propos", "Conformité & AML", "Presse", "Carrières"] },
+              { title: "Légal", links: ["CGU", "Politique de confidentialité", "Sécurité", "Réglementation FSA", "Tarifaire"] },
             ].map((col) => (
               <div key={col.title}>
                 <h4 className="text-white text-xs font-bold uppercase tracking-widest mb-5">{col.title}</h4>
@@ -776,8 +776,8 @@ export default function Landing() {
             ))}
           </div>
           <div className="border-t border-white/[0.06] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-white/25 text-xs">© {new Date().getFullYear()} NeoBank. Tous droits réservés.</p>
-            <p className="text-white/20 text-xs text-center">NeoBank est une institution financière agréée. L'investissement comporte des risques de perte en capital.</p>
+            <p className="text-white/25 text-xs">© {new Date().getFullYear()} KovaBank Ltd. Tous droits réservés.</p>
+            <p className="text-white/20 text-xs text-center">KovaBank Ltd est régulée par la FSA et la CIMA (Îles Caïmans). L'investissement comporte des risques de perte en capital.</p>
           </div>
         </div>
       </footer>

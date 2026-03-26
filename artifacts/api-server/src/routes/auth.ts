@@ -5,21 +5,21 @@ const router: IRouter = Router();
 router.post("/auth/demo-login", (_req, res) => {
   res.json({
     success: true,
-    message: "Welcome to NeoBank Demo!",
+    message: "Welcome to KovaBank Private Banking.",
     user: {
       id: "demo-user-001",
       firstName: "Alexandre",
       lastName: "Martin",
-      email: "alexandre.martin@demo.neobank.com",
-      phone: "+33 6 12 34 56 78",
+      email: "alexandre.martin@kovabank.com",
+      phone: "+41 22 900 11 22",
       avatarUrl: "",
       memberSince: "2022-03-15",
       tier: "premium",
-      address: "12 Avenue des Champs-Élysées",
-      city: "Paris",
-      country: "France",
-      iban: "FR76 3000 6000 0112 3456 7890 189",
-      bic: "BNPAFRPPXXX",
+      address: "14 Rue du Rhône",
+      city: "Genève",
+      country: "Suisse",
+      iban: "CH93 0076 2011 6238 5295 7",
+      bic: "UBSWCHZH80A",
     },
   });
 });

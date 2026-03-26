@@ -76,7 +76,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               <span className="font-black text-[#050d1a] text-sm leading-none">N</span>
             </div>
           </div>
-          <span className="font-black text-white text-lg tracking-tight">Neo<span className="text-primary">Bank</span></span>
+          <span className="font-black text-white text-lg tracking-tight">Kova<span className="text-primary">Bank</span></span>
         </Link>
       </div>
 
@@ -190,7 +190,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <span className="font-black text-[#050d1a] text-sm">N</span>
             </div>
-            <span className="font-black text-white text-base tracking-tight">Neo<span className="text-primary">Bank</span></span>
+            <span className="font-black text-white text-base tracking-tight">Kova<span className="text-primary">Bank</span></span>
           </Link>
           <div className="flex items-center gap-3">
             <button className="text-white/40 hover:text-white relative transition-colors">
